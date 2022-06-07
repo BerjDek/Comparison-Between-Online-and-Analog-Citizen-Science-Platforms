@@ -1,0 +1,49 @@
+---
+title: 'Comparison: MosquitoAlert/Mukenatlas'
+author: "Berj Dekramanjian"
+date: '2022-06-07'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction
+
+The following document analyses open responses of participants in two Citizen Science(CS) projects "Mosquitoalert"(MA) & "Mükenaltas"(MA). Both CS projects aim to involve the general public in the task of surveying,collecting, studying , and ultimately controling the spread of invasive mosquito species, and are based in Spain and Germany respectively. One main difference between the projects, is their varying method of data collection rquired from thier participants, where MA relies on mobile technology and requires their participants to share their findings with scientists through the web, MA asks its participants to physically send their specimen to the scientists by mail.
+
+The participants of both projects, took part in  surveys where they were asked about their demographic variables, assesment of three Suggested motivators, and to express with their own words, what motivates them to participate in their respective projects. The below analysis utilises chi-squared, t-test and code adapted from the  book "Text Mining with R: A Tidy Approach" by Helina Teixeira to complete a word and sentiment analyses of the responses.
+
+
+
+## Loading  Libraries 
+```{r pakages and data}
+library(tidyr,dplyr,tidytext,stirngr,ggplot2,scales,vcd)
+
+```
+
+## Loading Data
+
+
+```{r data}
+MA_data <- read.csv(file = "CleanMA.csv", head = TRUE)
+MS_data <- read.csv(file = "Raw_translated.csv", head = TRUE, sep=";")%>% 
+  mutate(Respondent = row_number())
+
+
+MA_Motivation <- select( MA_data, X, Mot_Learn, Mot_Community, Mot_Fun, Age, Gender, Environment) %>% 
+  rename( Respondent = X, Learning = Mot_Learn, Community = Mot_Community, Leisure = Mot_Fun)
+MS_Motivation <- select( MS_data, Respondent, motivated_rated_1,motivated_rated_2,motivated_rated_3, age, gender, liv_env)  %>% 
+  rename(Learning = motivated_rated_1, Community = motivated_rated_2, Leisure = motivated_rated_3, Gender = gender, Age = age, Environment = liv_env )
+
+
+MA_Motivation <- na.omit(MA_Motivation)
+MA_Motivation[MA_Motivation==0] <- NA
+
+
+
+```
+
+
